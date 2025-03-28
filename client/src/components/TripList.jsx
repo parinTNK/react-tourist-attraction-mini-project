@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "lucide-react";
 
 function TripList() {
     const [trips, setTrips] = useState([]);
@@ -24,7 +25,7 @@ function TripList() {
 
     return (
         <div className="container mx-auto flex justify-center flex-col items-center p-4">
-            <h1 className="text-3xl font-bold text-blue-500 mb-10 mt-14 items-center">เที่ยวไหนดี</h1>
+            <h1 className="text-5xl font-bold text-blue-500 mb-10 mt-14 items-center">เที่ยวไหนดี</h1>
             <div className="w-3/5">
                 <p className="mb-4">ค้นหาที่เที่ยว</p>
             </div>
@@ -33,7 +34,7 @@ function TripList() {
                 value={searchKeywords.join(" ")}
                 onChange={(e) => setSearchKeywords(e.target.value.split(" "))} // Update searchKeywords on input change
                 placeholder="หาที่เที่ยวแล้วไปกัน..."
-                className="w-3/5 p-2 border-b-2 border-gray-300 text-center"
+                className="w-3/5 p-2 border-b-2 border-gray-300 text-center focus:outline-none"
             />
 
             {/* post card */}
@@ -53,13 +54,11 @@ function TripList() {
                         </div>
 
                         {/* Right Column: Information */}
-                        <div className="md:w-2/3 md:ml-4 flex gap-3 flex-col ">
+                        <div className="md:w-2/3 md:ml-4 flex gap-6 flex-col ">
                             <div>
                                 <a className="text-2xl font-bold text-gray-800 hover:underline underline-offset-8" href={trip.url}>{trip.title}</a>
-                                <p className="text-gray-600 mt-2 line-clamp-3">
-                                    {trip.description.length > 100
-                                        ? `${trip.description.slice(0, 100)}...`
-                                        : trip.description}
+                                <p className="text-gray-600 mt-2 line-clamp-1">
+                                    {trip.description}
                                 </p>
                             </div>
                             <a
@@ -93,6 +92,18 @@ function TripList() {
                                         />
                                     ))}
                                 </div>
+                            </div>
+                            <div className="flex justify-end items-center mt-1">
+                            <button
+                                onClick={() => {
+                                    navigator.clipboard.writeText(trip.url);
+                                    alert("Link copied to clipboard!");
+                                }}
+                                className="flex items-center gap-2 text-blue-500 hover:underline text-sm"
+                            >
+                                <Link className="w-6 h-6" />
+                                Copy Link
+                            </button>
                             </div>
                         </div>
                     </div>
