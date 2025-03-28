@@ -2,13 +2,18 @@ import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
 import trips from "./db.js";
+import morgan from "morgan";
 
 const app = express();
 const port = 4001;
 
+
 app.use(cors());
 app.use(bodyParser.json());
+app.use(morgan('dev'));
 
+
+// localhost:4001
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
