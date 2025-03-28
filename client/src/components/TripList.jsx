@@ -3,11 +3,12 @@ import axios from "axios";
 
 function TripList() {
     const [trips, setTrips] = useState([]);
+    const [searchKeywords, setSearchKeywords] = useState([]);
 
     useEffect(() => {
         const fetchTrips = async () => {
             try {
-                const response = await axios.get("http://localhost:4001/trips?keywords="); // Adjust the endpoint as needed
+                const response = await axios.get(`http://localhost:4001/trips?keywords=${searchKeywords.join(" ")}`);
                 setTrips(response.data.data);
             } catch (error) {
                 console.error("Error fetching trips:", error);
@@ -15,31 +16,39 @@ function TripList() {
         };
 
         fetchTrips();
-    }, []);
+    }, [searchKeywords]); // Re-fetch trips when searchKeywords changes
+
+    const handleTagClick = (tag) => {
+        setSearchKeywords((prev) => [...prev, tag]); // เพิ่ม tag เข้าไปใน array
+    };
 
     return (
         <div className="container mx-auto flex justify-center flex-col items-center p-4">
             <h1 className="text-3xl font-bold text-blue-500 mb-10 mt-14 items-center">เที่ยวไหนดี</h1>
             <div className="w-3/5">
-            <p className="mb-4">ค้นหาที่เที่ยว</p>
+                <p className="mb-4">ค้นหาที่เที่ยว</p>
             </div>
             <input
                 type="text"
+                value={searchKeywords.join(" ")}
+                onChange={(e) => setSearchKeywords(e.target.value.split(" "))} // Update searchKeywords on input change
                 placeholder="หาที่เที่ยวแล้วไปกัน..."
                 className="w-3/5 p-2 border-b-2 border-gray-300 text-center"
             />
+
+            {/* post card */}
             <div className="flex flex-col gap-6 h-300 mt-10">
                 {trips.map((trip) => (
                     <div
                         key={trip.eid}
-                        className=" gap-7 flex flex-col md:flex-row my-5"
+                        className="gap-7 flex flex-col md:flex-row my-5"
                     >
                         {/* Left Column: Photos */}
                         <div className="md:w-1/3 flex flex-col gap-2">
                             <img
                                 src={trip.photos[0]}
                                 alt={trip.title}
-                                className="w-full h-80 object-cover rounded-3xl" 
+                                className="w-full h-80 object-cover rounded-3xl"
                             />
                         </div>
 
@@ -61,11 +70,12 @@ function TripList() {
                             >
                                 อ่านต่อ
                             </a>
-                            <div className=" flex flex-wrap gap-2">
+                            <div className="flex flex-wrap gap-2">
                                 {trip.tags.map((tag, index) => (
                                     <span
                                         key={index}
-                                        className="bg-blue-100 text-blue-500 text-sm px-2 py-1 rounded"
+                                        onClick={() => handleTagClick(tag)} // Add onClick handler
+                                        className="bg-blue-100 text-blue-500 text-sm px-2 py-1 rounded cursor-pointer hover:bg-blue-200"
                                     >
                                         {tag}
                                     </span>
